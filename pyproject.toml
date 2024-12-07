@@ -20,4 +20,6 @@ dev = [
     "pytest>=8.3.3",
     "types-lxml>=2024.11.8",
     "types-requests>=2.32.0.20241016",
+    "pyright>=1.1.390",
+    "ruff>=0.8.2",
 ]
