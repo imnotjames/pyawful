@@ -68,9 +68,7 @@ def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
         unread_count = reply_count + 1
 
     tags = [
-        t.get("src", "")
-        for t in CSS_THREAD_TAG_ICON(thread_item)
-        if t.get("src", "")
+        t.get("src", "") for t in CSS_THREAD_TAG_ICON(thread_item) if t.get("src", "")
     ]
 
     rating_elements = CSS_THREAD_RATING(thread_item)
