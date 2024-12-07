@@ -36,7 +36,6 @@ CSS_POST_CREATED_AT = CSSSelector(".postdate")
 
 CSS_POST_AUTHOR_PROFILE_LINK = CSSSelector(".profilelinks li:first-of-type a")
 CSS_POST_AUTHOR = CSSSelector("td.userinfo .author")
-CSS_POST_AUTHOR_REGISTRATION = CSSSelector("td.userinfo .registered")
 
 
 def parse_post_body(post_body: HtmlElement) -> str:
@@ -98,15 +97,10 @@ def parse_author(post_item: HtmlElement) -> User:
     user_id = int(user_profile_href.split("userid=")[-1])
 
     username = CSS_POST_AUTHOR(post_item).pop().text_content()
-    registration_date = datetime.strptime(
-        CSS_POST_AUTHOR_REGISTRATION(post_item).pop().text_content(),
-        DATE_FORMAT_REGISTRATION,
-    )
 
     return User(
         id=user_id,
         username=username,
-        registration_date=registration_date,
     )
 
 
