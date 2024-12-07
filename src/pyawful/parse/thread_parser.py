@@ -94,7 +94,7 @@ def parse_updated_at(post_item: HtmlElement) -> datetime | None:
 
 
 def parse_author(post_item: HtmlElement) -> User:
-    user_profile_href = CSS_POST_AUTHOR_PROFILE_LINK(post_item).pop().get("href")
+    user_profile_href = CSS_POST_AUTHOR_PROFILE_LINK(post_item).pop().get("href", "")
     user_id = int(user_profile_href.split("userid=")[-1])
 
     username = CSS_POST_AUTHOR(post_item).pop().text_content()
@@ -111,7 +111,7 @@ def parse_author(post_item: HtmlElement) -> User:
 
 
 def parse_post(post_item: HtmlElement) -> Post:
-    post_id = int(post_item.get("id").replace("post", ""))
+    post_id = int(post_item.get("id", "").replace("post", ""))
 
     html = parse_post_body(CSS_POST_BODY(post_item).pop())
 
@@ -135,7 +135,7 @@ def parse_post(post_item: HtmlElement) -> Post:
 
 
 def parse_forum_info(document: HtmlElement) -> Forum:
-    forum_id = int(document.body.get("data-forum"))
+    forum_id = int(document.body.get("data-forum", ""))
 
     forum_anchor: HtmlElement = CSS_FORUM_BREADCRUMBS(document).pop()
     forum_title = forum_anchor.text_content()
@@ -143,7 +143,7 @@ def parse_forum_info(document: HtmlElement) -> Forum:
 
 
 def parse_thread_info(document: HtmlElement) -> Thread:
-    thread_id = int(document.body.get("data-thread"))
+    thread_id = int(document.body.get("data-thread", ""))
 
     thread_anchor: HtmlElement = CSS_THREAD_ANCHOR(document).pop()
     thread_title = thread_anchor.text_content()

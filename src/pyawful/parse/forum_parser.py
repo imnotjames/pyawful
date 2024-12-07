@@ -43,7 +43,7 @@ def is_announce_thread(thread_item: HtmlElement) -> bool:
 
 
 def parse_forum_info(document: HtmlElement) -> Forum:
-    forum_id = int(document.body.get("data-forum"))
+    forum_id = int(document.body.get("data-forum", ""))
 
     forum_anchor: HtmlElement = CSS_FORUM_ANCHOR(document).pop()
     forum_title = forum_anchor.text_content()
@@ -51,7 +51,7 @@ def parse_forum_info(document: HtmlElement) -> Forum:
 
 
 def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
-    thread_id = int(thread_item.get("id").replace("thread", ""))
+    thread_id = int(thread_item.get("id", "").replace("thread", ""))
     title = CSS_THREAD_TITLE(thread_item).pop().text_content()
 
     is_sticky = len(CSS_THREAD_IS_STICKY(thread_item)) > 0
@@ -67,12 +67,16 @@ def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
     else:
         unread_count = reply_count + 1
 
-    tags = [t.get("src") for t in CSS_THREAD_TAG_ICON(thread_item)]
+    tags = [
+        t.get("src", "")
+        for t in CSS_THREAD_TAG_ICON(thread_item)
+        if t.get("src", "")
+    ]
 
     rating_elements = CSS_THREAD_RATING(thread_item)
 
     if len(rating_elements) > 0:
-        rating_str = rating_elements.pop().get("title")
+        rating_str = rating_elements.pop().get("title", "")
         match = PATTERN_RATING.match(rating_str)
 
         rating = float(match[2]) if match else 0
@@ -100,8 +104,8 @@ def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
 
 
 def parse_forum_page(document: HtmlElement) -> ThreadList:
-    current_page = int(CSS_FORUM_CURRENT_PAGE(document).pop().get("value"))
-    last_page = int(CSS_FORUM_LAST_PAGE(document).pop().get("value"))
+    current_page = int(CSS_FORUM_CURRENT_PAGE(document).pop().get("value", ""))
+    last_page = int(CSS_FORUM_LAST_PAGE(document).pop().get("value", ""))
 
     is_locked = len(CSS_FORUM_IS_LOCKED(document)) > 0
     forum = parse_forum_info(document)
