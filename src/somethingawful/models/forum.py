@@ -40,6 +40,7 @@ FORUM_ABBREVIATIONS: Mapping[int, str] = {
     269: "C-SPAM",
     272: "RSF",
     273: "GBS",
+    686: "SAD",
 }
 
 
