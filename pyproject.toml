@@ -1,5 +1,5 @@
 [project]
-name = "somethingawful"
+name = "pyawful"
 version = "0.0.1"
 description = "Pay ten dollars to get access to a dead forum."
 readme = "README.md"
