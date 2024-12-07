@@ -54,5 +54,8 @@ jobs:
             | jq ".generalDiagnostics" \
             | jq --arg "GIT_TOPLEVEL" "$GIT_TOPLEVEL" '.[].file |= ltrimstr($GIT_TOPLEVEL) | .[].file |= ltrimstr("/")' \
             | jq -r '.[] | .file + ":" + (.range.start.line | tostring) + ":" + (.range.end.line | tostring) + " - " + (.message | split("\n")[0])'
+          PYRIGHT_EXIT_CODE="$?"
 
           echo "::remove-matcher owner=pyright::"
+
+          exit "$PYRIGHT_EXIT_CODE"
