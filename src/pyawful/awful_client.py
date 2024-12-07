@@ -1,12 +1,12 @@
-from lxml.html import fromstring, html_parser, HtmlElement
+from lxml.html import HtmlElement, fromstring, html_parser
 
-from .types import AwfulSession, AwfulClient
 from .models import ThreadSortField
-from .network_client import NetworkClient, AuthenticatedNetworkClientSession
+from .network_client import AuthenticatedNetworkClientSession, NetworkClient
 from .parse import (
     parse_forum_page,
     parse_thread_page,
 )
+from .types import AwfulClient, AwfulSession
 
 
 class InternalAwfulClient(AwfulClient):

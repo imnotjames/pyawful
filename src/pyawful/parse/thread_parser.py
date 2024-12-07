@@ -4,7 +4,7 @@ from datetime import datetime
 from lxml.cssselect import CSSSelector
 from lxml.html import HtmlElement, tostring
 
-from ..models import Thread, Post, PostList, Forum, User
+from ..models import Forum, Post, PostList, Thread, User
 
 DATE_FORMAT_CREATED_AT = "%b %d, %Y %H:%M"  # Dec 1, 2024 23:32
 DATE_FORMAT_UPDATED_AT = "%H:%M on %b %d, %Y"  # 05:20 on Dec  5, 2024

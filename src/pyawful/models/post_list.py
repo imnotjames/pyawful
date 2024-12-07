@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from typing import Sequence
 
 from .forum import Forum
-from .thread import Thread
 from .post import Post
+from .thread import Thread
 
 
 @dataclass

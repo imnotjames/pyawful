@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Mapping
 
-
 FORUM_ABBREVIATIONS: Mapping[int, str] = {
     1: "RIP",
     21: "55555",

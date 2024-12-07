@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from .models import ThreadSortField, ThreadList, PostList
+from .models import PostList, ThreadList, ThreadSortField
 
 
 class AwfulClient(Protocol):
@@ -13,15 +13,11 @@ class AwfulClient(Protocol):
         sort_field: ThreadSortField = ThreadSortField.CREATED_AT,
         sort_invert: bool = False,
     ) -> ThreadList:
-        """
-        Get awful forum threads
-        """
+        """Get awful forum threads."""
 
     @abstractmethod
     def get_thread_posts(self, thread_id: int, page: int = 1) -> PostList:
-        """
-        Get an awful thread's posts
-        """
+        """Get an awful thread's posts."""
 
 
 class AwfulSession(Protocol):

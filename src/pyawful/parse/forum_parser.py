@@ -1,16 +1,15 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
-from lxml.html import HtmlElement
 from lxml.cssselect import CSSSelector
+from lxml.html import HtmlElement
 
 from ..models import (
     Forum,
-    ThreadMetadata,
     ThreadList,
+    ThreadMetadata,
     ThreadSortField,
 )
-
 
 DATE_FORMAT_UPDATED_AT = "%H:%M %b %d, %Y"  # 21:06 May 23, 2012
 

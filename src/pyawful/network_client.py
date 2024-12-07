@@ -1,8 +1,8 @@
 from contextlib import AbstractContextManager
-from urllib.parse import urljoin
-from typing import Any
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Any
+from urllib.parse import urljoin
 
 from requests import request
 
