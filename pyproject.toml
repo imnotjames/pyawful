@@ -1,6 +1,6 @@
 [project]
 name = "pyawful"
-version = "0.0.1"
+version = "0.1.0"
 description = "Pay ten dollars to get access to a dead forum."
 readme = "README.md"
 requires-python = ">=3.12"
