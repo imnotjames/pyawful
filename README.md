@@ -14,7 +14,20 @@ and can be installed via your package manager of choice.
 
 ## Usage
 
-TBD
+```python
+import os
+
+from pyawful import AuthenticatedAwfulSession
+
+USERNAME = os.environ["SA_USERNAME"]
+PASSWORD = os.environ["SA_PASSWORD"]
+
+with AuthenticatedAwfulSession(USERNAME, PASSWORD) as client:
+    response = client.get_forum_threads(273)
+
+    for thread in response.threads:
+        print(thread.title)
+```
 
 ## License
 
