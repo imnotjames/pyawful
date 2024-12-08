@@ -1,5 +1,4 @@
 import re
-from datetime import datetime
 
 from lxml.cssselect import CSSSelector
 from lxml.html import HtmlElement
@@ -10,6 +9,7 @@ from ..models import (
     ThreadMetadata,
     ThreadSortField,
 )
+from .common import parse_attribute_int, parse_datetime, parse_int, parse_str
 
 DATE_FORMAT_UPDATED_AT = "%H:%M %b %d, %Y"  # 21:06 May 23, 2012
 
@@ -51,19 +51,17 @@ def parse_forum_info(document: HtmlElement) -> Forum:
 
 def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
     thread_id = int(thread_item.get("id", "").replace("thread", ""))
-    title = CSS_THREAD_TITLE(thread_item).pop().text_content()
+    title = parse_str(CSS_THREAD_TITLE(thread_item))
 
     is_sticky = len(CSS_THREAD_IS_STICKY(thread_item)) > 0
     is_closed = len(CSS_THREAD_IS_CLOSED(thread_item)) > 0
     is_unread = len(CSS_THREAD_IS_READ(thread_item)) == 0
 
-    reply_count = int(CSS_THREAD_REPLY_COUNT(thread_item).pop().text_content())
+    reply_count = parse_int(CSS_THREAD_REPLY_COUNT(thread_item), 0)
 
-    unread_count_elements = CSS_THREAD_UNREAD_COUNT(thread_item)
+    unread_count = parse_int(CSS_THREAD_UNREAD_COUNT(thread_item), default=-1)
 
-    if len(unread_count_elements) > 0:
-        unread_count = int(unread_count_elements.pop().text_content())
-    else:
+    if unread_count < 0:
         unread_count = reply_count + 1
 
     tags = [
@@ -73,7 +71,7 @@ def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
     rating_elements = CSS_THREAD_RATING(thread_item)
 
     if len(rating_elements) > 0:
-        rating_str = rating_elements.pop().get("title", "")
+        rating_str = parse_str(rating_elements)
         match = PATTERN_RATING.match(rating_str)
 
         rating = float(match[2]) if match else 0
@@ -82,8 +80,8 @@ def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
         rating = 0
         rating_count = 0
 
-    updated_at = datetime.strptime(
-        CSS_THREAD_UPDATED_AT(thread_item).pop().text_content(), DATE_FORMAT_UPDATED_AT
+    updated_at = parse_datetime(
+        CSS_THREAD_UPDATED_AT(thread_item), DATE_FORMAT_UPDATED_AT
     )
 
     return ThreadMetadata(
@@ -101,8 +99,8 @@ def parse_thread_item(thread_item: HtmlElement) -> ThreadMetadata:
 
 
 def parse_forum_page(document: HtmlElement) -> ThreadList:
-    current_page = int(CSS_FORUM_CURRENT_PAGE(document).pop().get("value", ""))
-    last_page = int(CSS_FORUM_LAST_PAGE(document).pop().get("value", ""))
+    current_page = parse_attribute_int(CSS_FORUM_CURRENT_PAGE(document), "value")
+    last_page = parse_attribute_int(CSS_FORUM_LAST_PAGE(document), "value")
 
     is_locked = len(CSS_FORUM_IS_LOCKED(document)) > 0
     forum = parse_forum_info(document)

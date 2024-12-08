@@ -1,10 +1,11 @@
 from datetime import datetime
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from lxml.cssselect import CSSSelector
 from lxml.html import HtmlElement
 
 from ..models import Profile, User
+from .common import parse_attribute_str, parse_str
 
 DATE_FORMAT_LAST_POST = "%b %d, %Y %H:%M"  # Dec 5, 2024 21:37
 DATE_FORMAT_REGISTRATION = "%b %d, %Y"
@@ -22,16 +23,17 @@ CSS_USER_CONTACT_IS_UNSET = CSSSelector(".unset")
 
 
 def parse_user(document: HtmlElement) -> User:
-    rap_sheet_element = CSS_USER_RAP_SHEET_LINK(document).pop()
-    user_id = int(rap_sheet_element.get("href", "").split("=")[-1])
+    rap_sheet_href = parse_attribute_str(CSS_USER_RAP_SHEET_LINK(document), "href")
+    user_id = int(rap_sheet_href.split("-")[-1])
 
-    username_element = CSS_USER_USERNAME(document).pop()
-    username = username_element.text_content() if username_element is not None else ""
+    username = parse_str(CSS_USER_USERNAME(document))
 
     return User(id=user_id, username=username)
 
 
-def parse_contact_info(contact_info: HtmlElement | None) -> str | None:
+def parse_contact_info(contact_info_elements: Sequence[HtmlElement]) -> str | None:
+    contact_info = contact_info_elements[-1]
+
     if contact_info is None or len(CSS_USER_CONTACT_IS_UNSET(contact_info)) > 0:
         return None
 
@@ -62,13 +64,14 @@ def parse_additional_info(document: HtmlElement) -> Mapping[str, str]:
 def parse_profile_page(document: HtmlElement) -> Profile:
     user = parse_user(document)
 
-    contact_icq = parse_contact_info(CSS_USER_CONTACT_ICQ(document).pop())
-    contact_aim = parse_contact_info(CSS_USER_CONTACT_AIM(document).pop())
-    contact_yahoo = parse_contact_info(CSS_USER_CONTACT_YAHOO(document).pop())
-    contact_homepage = parse_contact_info(CSS_USER_CONTACT_HOMEPAGE(document).pop())
+    contact_icq = parse_contact_info(CSS_USER_CONTACT_ICQ(document))
+    contact_aim = parse_contact_info(CSS_USER_CONTACT_AIM(document))
+    contact_yahoo = parse_contact_info(CSS_USER_CONTACT_YAHOO(document))
+    contact_homepage = parse_contact_info(CSS_USER_CONTACT_HOMEPAGE(document))
 
     registered_at = datetime.strptime(
-        CSS_USER_REGISTERED_AT(document).pop().text_content(), DATE_FORMAT_REGISTRATION
+        parse_str(CSS_USER_REGISTERED_AT(document)),
+        DATE_FORMAT_REGISTRATION,
     )
 
     additional_info = parse_additional_info(document)

@@ -5,6 +5,7 @@ from lxml.cssselect import CSSSelector
 from lxml.html import HtmlElement, tostring
 
 from ..models import Forum, Post, PostList, Thread, User
+from .common import parse_attribute_str, parse_str
 
 DATE_FORMAT_CREATED_AT = "%b %d, %Y %H:%M"  # Dec 1, 2024 23:32
 DATE_FORMAT_UPDATED_AT = "%H:%M on %b %d, %Y"  # 05:20 on Dec  5, 2024
@@ -61,9 +62,7 @@ def parse_post_body(post_body: HtmlElement) -> str:
 def parse_created_at(post_item: HtmlElement) -> datetime:
     # This is a bit messy, but it seems to work for now.
     created_at_str = (
-        CSS_POST_CREATED_AT(post_item)
-        .pop()
-        .text_content()
+        parse_str(CSS_POST_CREATED_AT(post_item))
         .replace("#", "")
         .replace("?", "")
         .strip()
@@ -92,10 +91,12 @@ def parse_updated_at(post_item: HtmlElement) -> datetime | None:
 
 
 def parse_author(post_item: HtmlElement) -> User:
-    user_profile_href = CSS_POST_AUTHOR_PROFILE_LINK(post_item).pop().get("href", "")
+    user_profile_href = parse_attribute_str(
+        CSS_POST_AUTHOR_PROFILE_LINK(post_item), "href"
+    )
     user_id = int(user_profile_href.split("userid=")[-1])
 
-    username = CSS_POST_AUTHOR(post_item).pop().text_content()
+    username = parse_str(CSS_POST_AUTHOR(post_item))
 
     return User(
         id=user_id,
