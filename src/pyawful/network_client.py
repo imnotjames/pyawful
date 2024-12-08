@@ -1,4 +1,3 @@
-from contextlib import AbstractContextManager
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
@@ -9,12 +8,6 @@ from requests import request
 from .models import ThreadSortField
 
 DEFAULT_BASE_URL = "https://forums.somethingawful.com/"
-AUTH_COOKIES = (
-    "bbuserid",
-    "bbpassword",
-    "sessionid",
-    "sessionhash",
-)
 
 
 @dataclass
@@ -61,6 +54,16 @@ class NetworkClient:
             },
         )
 
+    def logout(self, csrf_token: str):
+        return self.request(
+            "GET",
+            "/account.php",
+            data={
+                "action": "logout",
+                "ma": csrf_token,
+            },
+        )
+
     def get_user_control_panel(self):
         return self.request("GET", "/usercp.php")
 
@@ -101,50 +104,3 @@ class NetworkClient:
                 "pagenumber": page,
             },
         )
-
-
-class AuthenticatedNetworkClientSession(AbstractContextManager):
-    def __init__(
-        self, username: str, password: str, *, base_url: str = DEFAULT_BASE_URL
-    ):
-        self._username = username
-        self._password = password
-        self._base_url = base_url
-
-        self._unauthenticated_client = NetworkClient(base_url=self._base_url)
-
-    def _authenticate(self):
-        response = self._unauthenticated_client.login(self._username, self._password)
-
-        # The cookies are in the redirect and I can't find a better way to get at them.
-        for r in response.history:
-            for c in r.cookies:
-                response.cookies.set_cookie(c)
-
-        session_expiry = min(
-            c.expires
-            for c in response.cookies
-            if c.name in AUTH_COOKIES and c.expires is not None
-        )
-
-        session_hash = response.cookies.get("sessionhash")
-        bb_user_id = response.cookies.get("bbuserid")
-        bb_password = response.cookies.get("bbpassword")
-
-        if bb_user_id is None or bb_password is None or session_hash is None:
-            raise ValueError("could not log in")
-
-        return ClientAuthCookies(
-            expiration=datetime.fromtimestamp(session_expiry),
-            bb_user_id=bb_user_id,
-            bb_password=bb_password,
-            session_hash=session_hash,
-        )
-
-    def __enter__(self) -> NetworkClient:
-        auth_cookies = self._authenticate()
-
-        return NetworkClient(auth_cookies=auth_cookies, base_url=self._base_url)
-
-    def __exit__(self, exc_type, exc_value, traceback, /):
-        pass
