@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0](https://github.com/imnotjames/pyawful/compare/v0.1.1...v0.2.0) (2024-12-08)
+
+
+### Features
+
+* support user profiles ([f4cbdef](https://github.com/imnotjames/pyawful/commit/f4cbdef7e0371817030e6c075c9307778a7771cb))
+
+
+### Bug Fixes
+
+* move auth into the awful client rather than the network client ([dd89a62](https://github.com/imnotjames/pyawful/commit/dd89a627705e9f8ca42118c8e724910157244d40))
+
+
+### Documentation
+
+* reference correct package name ([2602706](https://github.com/imnotjames/pyawful/commit/2602706ce2f6c846a0ae5b8434b00223ceb6f58b))
+
 ## [0.1.1](https://github.com/imnotjames/pyawful/compare/v0.1.0...v0.1.1) (2024-12-08)
 
 
