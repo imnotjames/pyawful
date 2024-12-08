@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/imnotjames/pyawful/compare/v0.1.0...v0.1.1) (2024-12-08)
+
+
+### Bug Fixes
+
+* proper forum thread sort ([c31e385](https://github.com/imnotjames/pyawful/commit/c31e3850e7a30820a1e5a3c7e1cc274e5a197aa1))
+
 ## [0.1.0](https://github.com/imnotjames/pyawful/compare/v0.0.1...v0.1.0) (2024-12-07)
 
 
