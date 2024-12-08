@@ -67,6 +67,16 @@ class NetworkClient:
     def get_user_control_panel(self):
         return self.request("GET", "/usercp.php")
 
+    def get_user_profile(self, user_id: int):
+        return self.request(
+            "GET",
+            "/member.php",
+            params={
+                "action": "getinfo",
+                "userid": user_id,
+            },
+        )
+
     def get_forum(
         self,
         forum_id: int,

@@ -6,6 +6,7 @@ from .models import ThreadSortField
 from .network_client import ClientAuthCookies, NetworkClient
 from .parse import (
     parse_forum_page,
+    parse_profile_page,
     parse_thread_page,
 )
 from .types import AwfulClient, AwfulSession
@@ -25,6 +26,11 @@ class InternalAwfulClient(AwfulClient):
     @staticmethod
     def _parse(html: str) -> HtmlElement:
         return fromstring(html, parser=html_parser)
+
+    def get_user_profile(self, user_id: int):
+        response = self._network_client.get_user_profile(user_id)
+        document = self._parse(response.text)
+        return parse_profile_page(document)
 
     def get_forum_threads(
         self,

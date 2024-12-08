@@ -8,7 +8,6 @@ from ..models import Forum, Post, PostList, Thread, User
 
 DATE_FORMAT_CREATED_AT = "%b %d, %Y %H:%M"  # Dec 1, 2024 23:32
 DATE_FORMAT_UPDATED_AT = "%H:%M on %b %d, %Y"  # 05:20 on Dec  5, 2024
-DATE_FORMAT_REGISTRATION = ""
 
 PATTERN_EDIT_LINE = re.compile(
     "^(?P<username>.+) fucked around with this message at (?P<timestamp>.+)$"
