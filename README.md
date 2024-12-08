@@ -56,7 +56,7 @@ try:
         cookies = AwfulCookies(**cached_session["cookies"])
         expiration = datetime.fromtimestamp(cached_session["expiration"])
         session.resume_session(cookies, expiration)
-except:
+except Exception:
     pass
 
 with session as client:
