@@ -9,7 +9,7 @@ Spend $10 to interact with a dead forum from Python.
 
 ## Installation
 
-This package is available via [PyPi][pypi-package] as `somethingawful`
+This package is available via [PyPi][pypi-package] as `pyawful`
 and can be installed via your package manager of choice.
 
 ## Usage
@@ -33,4 +33,4 @@ with AuthenticatedAwfulSession(USERNAME, PASSWORD) as client:
 
 Licensed under the [MIT License](./LICENSE).
 
-[pypi-package]: https://pypi.org/project/somethingawful
+[pypi-package]: https://pypi.org/project/pyawful
