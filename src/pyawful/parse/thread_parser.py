@@ -5,7 +5,7 @@ from lxml.cssselect import CSSSelector
 from lxml.html import HtmlElement, tostring
 
 from ..models import Forum, Post, PostList, Thread, User
-from .common import parse_attribute_str, parse_str
+from .common import parse_attribute_str, parse_str, parse_int
 
 DATE_FORMAT_CREATED_AT = "%b %d, %Y %H:%M"  # Dec 1, 2024 23:32
 DATE_FORMAT_UPDATED_AT = "%H:%M on %b %d, %Y"  # 05:20 on Dec  5, 2024
@@ -154,8 +154,8 @@ def parse_thread_page(document: HtmlElement) -> PostList:
 
     is_locked = False
 
-    current_page = 0
-    last_page = 0
+    current_page = parse_int(CSS_THREAD_CURRENT_PAGE(document))
+    last_page = parse_int(CSS_THREAD_LAST_PAGE(document))
 
     thread_posts = CSS_THREAD_POSTS(document)
 
