@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/imnotjames/pyawful/compare/v0.3.0...v0.4.0) (2024-12-08)
+
+
+### Features
+
+* support parsing page info from thread parsing ([95f9bcc](https://github.com/imnotjames/pyawful/commit/95f9bcc7fe70005976f0a8a1dd192b8e00de77cc))
+
+
+### Bug Fixes
+
+* properly get user ID from rap sheet link ([1404325](https://github.com/imnotjames/pyawful/commit/14043256c629de9e6738eae717bd305b8c5368a2))
+
 ## [0.3.0](https://github.com/imnotjames/pyawful/compare/v0.2.0...v0.3.0) (2024-12-08)
 
 
