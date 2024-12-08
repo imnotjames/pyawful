@@ -1,8 +1,8 @@
-from datetime import datetime
 import os
+from datetime import datetime
 
 import pytest
-from lxml.html import fromstring, HtmlElement
+from lxml.html import HtmlElement, fromstring
 
 from pyawful.parse.thread_parser import parse_thread_page
 
@@ -35,11 +35,13 @@ def test_parse_gets_locked_status(example_document: HtmlElement):
 
     assert not response.is_locked
 
+
 def test_parse_gets_forum_reference(example_document: HtmlElement):
     response = parse_thread_page(example_document)
 
     assert response.forum.id == 273
     assert response.forum.name == "General Bullshit"
+
 
 def test_parse_gets_thread_reference(example_document: HtmlElement):
     response = parse_thread_page(example_document)
