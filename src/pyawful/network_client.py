@@ -13,14 +13,16 @@ class NetworkClient:
     def __init__(
         self,
         *,
-        auth_cookies: AwfulCookies | None = None,
+        cookies: AwfulCookies | None = None,
         base_url: str = DEFAULT_BASE_URL,
     ):
         self._base_url = base_url
         self._cookies: dict[str, str] = {}
 
-        if auth_cookies is not None:
-            self._cookies.update(auth_cookies)
+        if cookies is not None:
+            self._cookies["sessionhash"] = cookies["sessionhash"]
+            self._cookies["bbuserid"] = cookies["bbuserid"]
+            self._cookies["bbpassword"] = cookies["bbpassword"]
 
     def request(self, method: str, path: str, *, params: Any = None, data: Any = None):
         return request(

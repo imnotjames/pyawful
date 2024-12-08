@@ -136,7 +136,7 @@ class AuthenticatedAwfulSession(AwfulSession):
         if self._session_cookies is None:
             raise ValueError("not logged in")
 
-        network_client = NetworkClient(auth_cookies=self._session_cookies)
+        network_client = NetworkClient(cookies=self._session_cookies)
         return InternalAwfulClient(network_client)
 
     def __enter__(self) -> AwfulClient:
