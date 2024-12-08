@@ -38,6 +38,7 @@ select = [
     "S324",     # hashlib-insecure-hash-function: Probable use of insecure hash functions in {library}: {string}
     "I",        # All isort rules
     "D",        # All pydocstyle rules
+    "T201",     # Disallow `print` statements
 ]
 ignore = [
     "D1",       # Don't enforce existence of docstrings
