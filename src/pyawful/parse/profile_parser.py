@@ -23,7 +23,7 @@ CSS_USER_CONTACT_IS_UNSET = CSSSelector(".unset")
 
 def parse_user(document: HtmlElement) -> User:
     rap_sheet_element = CSS_USER_RAP_SHEET_LINK(document).pop()
-    user_id = int(rap_sheet_element.get("href").split("=")[-1])
+    user_id = int(rap_sheet_element.get("href", "").split("=")[-1])
 
     username_element = CSS_USER_USERNAME(document).pop()
     username = username_element.text_content() if username_element is not None else ""
