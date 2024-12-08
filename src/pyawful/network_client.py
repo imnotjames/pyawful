@@ -78,7 +78,7 @@ class NetworkClient:
             params={
                 "forumid": forum_id,
                 "pagenumber": thread_page,
-                "sortfield": thread_sort_field,
+                "sortfield": thread_sort_field.value,
                 "sortorder": "asc" if thread_sort_invert else "desc",
             },
         )
