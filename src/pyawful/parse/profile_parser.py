@@ -24,7 +24,7 @@ CSS_USER_CONTACT_IS_UNSET = CSSSelector(".unset")
 
 def parse_user(document: HtmlElement) -> User:
     rap_sheet_href = parse_attribute_str(CSS_USER_RAP_SHEET_LINK(document), "href")
-    user_id = int(rap_sheet_href.split("-")[-1])
+    user_id = int(rap_sheet_href.split("=")[-1])
 
     username = parse_str(CSS_USER_USERNAME(document))
 
