@@ -97,8 +97,6 @@ class AuthenticatedAwfulSession(AwfulSession):
             # in again.
             return
 
-        print("login")
-
         response = self._network_client.login(self._username, self._password)
 
         # The cookies are in the redirect and I can't find a better way to get at them.
