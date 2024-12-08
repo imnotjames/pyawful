@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Protocol
+from typing import Protocol, TypedDict
 
 from .models import PostList, ThreadList, ThreadSortField
 
@@ -26,3 +26,9 @@ class AwfulSession(Protocol):
 
     @abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb): ...
+
+
+class AwfulCookies(TypedDict):
+    bbuserid: str
+    bbpassword: str
+    sessionhash: str

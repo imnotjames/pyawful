@@ -29,6 +29,46 @@ with AuthenticatedAwfulSession(USERNAME, PASSWORD) as client:
         print(thread.title)
 ```
 
+### Caching Authentication Session
+
+> [!WARNING]
+> Ignore this advice if you want to pay $10 again
+
+Limit the number of sessions you create - if you're making lots
+of requests or otherwise doing something regularly you should
+persist the session cookies and restore them.
+
+```python
+from datetime import datetime
+import json
+import os
+
+from pyawful import AuthenticatedAwfulSession, AwfulCookies
+
+USERNAME = os.environ["SA_USERNAME"]
+PASSWORD = os.environ["SA_PASSWORD"]
+
+session = AuthenticatedAwfulSession(USERNAME, PASSWORD)
+
+try:
+    with open("./session.json", "r") as session_file:
+        cached_session = json.load(session_file)
+        cookies = AwfulCookies(**cached_session["cookies"])
+        expiration = datetime.fromtimestamp(cached_session["expiration"])
+        session.resume_session(cookies, expiration)
+except:
+    pass
+
+with session as client:
+    cookies = session.get_cookies()
+    expiration = session.get_expiration().timestamp()
+    with open("./session.json", "w") as session_file:
+        json.dump(
+            { "cookies": cookies, "expiration": expiration },
+            session_file
+        )
+```
+
 ## License
 
 Licensed under the [MIT License](./LICENSE).

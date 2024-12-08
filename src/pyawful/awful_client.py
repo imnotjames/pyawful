@@ -3,13 +3,13 @@ from datetime import datetime
 from lxml.html import HtmlElement, fromstring, html_parser
 
 from .models import ThreadSortField
-from .network_client import ClientAuthCookies, NetworkClient
+from .network_client import NetworkClient
 from .parse import (
     parse_forum_page,
     parse_profile_page,
     parse_thread_page,
 )
-from .types import AwfulClient, AwfulSession
+from .types import AwfulClient, AwfulCookies, AwfulSession
 
 AUTH_COOKIES = (
     "bbuserid",
@@ -55,12 +55,17 @@ class InternalAwfulClient(AwfulClient):
 
 
 class AuthenticatedAwfulSession(AwfulSession):
-    def __init__(self, username: str, password: str):
+    def __init__(
+        self,
+        username: str,
+        password: str,
+    ):
         self._username = username
         self._password = password
 
         self._logout_csrf_token: str | None = None
-        self._auth_cookies: ClientAuthCookies | None = None
+        self._session_cookies: AwfulCookies | None = None
+        self._session_expiration: datetime | None = None
 
         self._network_client = NetworkClient()
 
@@ -68,7 +73,32 @@ class AuthenticatedAwfulSession(AwfulSession):
     def _parse(html: str) -> HtmlElement:
         return fromstring(html, parser=html_parser)
 
+    def resume_session(self, cookies: AwfulCookies, expiration: datetime):
+        self._session_cookies = AwfulCookies(**cookies)
+        self._session_expiration = expiration
+
+    def get_cookies(self) -> AwfulCookies:
+        if self._session_cookies is None:
+            raise ValueError("not logged in")
+
+        # Return a copy
+        return AwfulCookies(**self._session_cookies)
+
+    def get_expiration(self):
+        return self._session_expiration
+
     def login(self):
+        if (
+            self._session_expiration is not None
+            and self._session_expiration > datetime.now()
+        ):
+            # If the session expiration is set and is in the future then
+            # we can probably be safe to assume that we don't need to log
+            # in again.
+            return
+
+        print("login")
+
         response = self._network_client.login(self._username, self._password)
 
         # The cookies are in the redirect and I can't find a better way to get at them.
@@ -89,12 +119,12 @@ class AuthenticatedAwfulSession(AwfulSession):
         if bb_user_id is None or bb_password is None or session_hash is None:
             raise ValueError("could not log in")
 
-        return ClientAuthCookies(
-            expiration=datetime.fromtimestamp(session_expiry),
-            bb_user_id=bb_user_id,
-            bb_password=bb_password,
-            session_hash=session_hash,
+        self._session_cookies = AwfulCookies(
+            bbuserid=bb_user_id,
+            bbpassword=bb_password,
+            sessionhash=session_hash,
         )
+        self._session_expiration = datetime.fromtimestamp(session_expiry)
 
     def logout(self):
         if self._logout_csrf_token is None:
@@ -103,10 +133,10 @@ class AuthenticatedAwfulSession(AwfulSession):
         self._network_client.logout(self._logout_csrf_token)
 
     def get_client(self) -> AwfulClient:
-        if self._auth_cookies is None:
-            raise
+        if self._session_cookies is None:
+            raise ValueError("not logged in")
 
-        network_client = NetworkClient(auth_cookies=self._auth_cookies)
+        network_client = NetworkClient(auth_cookies=self._session_cookies)
         return InternalAwfulClient(network_client)
 
     def __enter__(self) -> AwfulClient:

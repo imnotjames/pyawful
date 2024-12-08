@@ -1,37 +1,26 @@
-from dataclasses import dataclass
-from datetime import datetime
 from typing import Any
 from urllib.parse import urljoin
 
 from requests import request
 
 from .models import ThreadSortField
+from .types import AwfulCookies
 
 DEFAULT_BASE_URL = "https://forums.somethingawful.com/"
-
-
-@dataclass
-class ClientAuthCookies:
-    expiration: datetime
-    bb_user_id: str
-    bb_password: str
-    session_hash: str
 
 
 class NetworkClient:
     def __init__(
         self,
         *,
-        auth_cookies: ClientAuthCookies | None = None,
+        auth_cookies: AwfulCookies | None = None,
         base_url: str = DEFAULT_BASE_URL,
     ):
         self._base_url = base_url
         self._cookies: dict[str, str] = {}
 
-        if auth_cookies:
-            self._cookies["sessionhash"] = auth_cookies.session_hash
-            self._cookies["bbuserid"] = auth_cookies.bb_user_id
-            self._cookies["bbpassword"] = auth_cookies.bb_password
+        if auth_cookies is not None:
+            self._cookies.update(auth_cookies)
 
     def request(self, method: str, path: str, *, params: Any = None, data: Any = None):
         return request(

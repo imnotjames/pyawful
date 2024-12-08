@@ -8,11 +8,12 @@ from .models import (
     ThreadSortField,
     User,
 )
-from .types import AwfulClient
+from .types import AwfulClient, AwfulCookies
 
 __all__ = (
     "AuthenticatedAwfulSession",
     "AwfulClient",
+    "AwfulCookies",
     "Post",
     "PostList",
     "Thread",
