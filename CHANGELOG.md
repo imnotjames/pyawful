@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/imnotjames/pyawful/compare/v0.2.0...v0.3.0) (2024-12-08)
+
+
+### Features
+
+* support re-using session cookies ([51cc3d9](https://github.com/imnotjames/pyawful/commit/51cc3d9dee69392d84d74748fcf313eb7ceac779))
+
+
+### Bug Fixes
+
+* better error handling for parser ([e63b59e](https://github.com/imnotjames/pyawful/commit/e63b59eee91d5a7293704de32e5217e16bf0998b))
+* corrected usage of cookies with typing ([76e07c8](https://github.com/imnotjames/pyawful/commit/76e07c808e878d958898ace18ea7a2457816025b))
+
+
+### Documentation
+
+* slightly more correct usage example ([8ee40fa](https://github.com/imnotjames/pyawful/commit/8ee40fa2f7529dffcb7a5fe008dbd74d62973303))
+
 ## [0.2.0](https://github.com/imnotjames/pyawful/compare/v0.1.1...v0.2.0) (2024-12-08)
 
 
