@@ -2,9 +2,11 @@ from datetime import datetime
 
 from lxml.html import HtmlElement, fromstring, html_parser
 
+from .errors import WasLoggedOut
 from .models import ThreadSortField
 from .network_client import NetworkClient
 from .parse import (
+    parse_error,
     parse_forum_page,
     parse_profile_page,
     parse_thread_page,
@@ -19,17 +21,23 @@ AUTH_COOKIES = (
 )
 
 
+def _parse(html: str) -> HtmlElement:
+    document = fromstring(html, parser=html_parser)
+
+    error = parse_error(document)
+    if error:
+        raise error
+
+    return document
+
+
 class InternalAwfulClient(AwfulClient):
     def __init__(self, network_client: NetworkClient):
         self._network_client = network_client
 
-    @staticmethod
-    def _parse(html: str) -> HtmlElement:
-        return fromstring(html, parser=html_parser)
-
     def get_user_profile(self, user_id: int):
         response = self._network_client.get_user_profile(user_id)
-        document = self._parse(response.text)
+        document = _parse(response.text)
         return parse_profile_page(document)
 
     def get_forum_threads(
@@ -45,12 +53,12 @@ class InternalAwfulClient(AwfulClient):
             thread_sort_field=sort_field,
             thread_sort_invert=sort_invert,
         )
-        document = self._parse(response.text)
+        document = _parse(response.text)
         return parse_forum_page(document)
 
     def get_thread_posts(self, thread_id: int, page: int = 1):
         response = self._network_client.get_thread(thread_id, page)
-        document = self._parse(response.text)
+        document = _parse(response.text)
         return parse_thread_page(document)
 
 
@@ -68,10 +76,6 @@ class AuthenticatedAwfulSession(AwfulSession):
         self._session_expiration: datetime | None = None
 
         self._network_client = NetworkClient()
-
-    @staticmethod
-    def _parse(html: str) -> HtmlElement:
-        return fromstring(html, parser=html_parser)
 
     def resume_session(self, cookies: AwfulCookies, expiration: datetime):
         self._session_cookies = AwfulCookies(**cookies)
@@ -98,6 +102,7 @@ class AuthenticatedAwfulSession(AwfulSession):
             return
 
         response = self._network_client.login(self._username, self._password)
+        _parse(response.text)
 
         # The cookies are in the redirect and I can't find a better way to get at them.
         for r in response.history:
@@ -128,7 +133,13 @@ class AuthenticatedAwfulSession(AwfulSession):
         if self._logout_csrf_token is None:
             return
 
-        self._network_client.logout(self._logout_csrf_token)
+        response = self._network_client.logout(self._logout_csrf_token)
+
+        try:
+            _parse(response.text)
+        except WasLoggedOut:
+            # We expect `WasLoggedOut`
+            pass
 
     def get_client(self) -> AwfulClient:
         if self._session_cookies is None:
