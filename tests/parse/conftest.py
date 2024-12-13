@@ -1,10 +1,10 @@
 import os
 
 import pytest
-from lxml.html import fromstring
+from lxml.html import HtmlElement, fromstring
 
 
-def get_example(filename: str) -> str:
+def get_example(filename: str) -> HtmlElement:
     fixture_file = os.path.join(os.path.dirname(__file__), "fixtures", filename)
 
     with open(fixture_file) as f:
