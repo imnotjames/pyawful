@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/imnotjames/pyawful/compare/v0.4.0...v0.5.0) (2024-12-13)
+
+
+### Features
+
+* add error handling for common situations ([28da16f](https://github.com/imnotjames/pyawful/commit/28da16f7655db0e35301ac966fd8b40acd95f8a4))
+
 ## [0.4.0](https://github.com/imnotjames/pyawful/compare/v0.3.0...v0.4.0) (2024-12-08)
 
 
