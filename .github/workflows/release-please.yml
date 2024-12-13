@@ -57,6 +57,6 @@ jobs:
 
           if [[ -n "$(git status --porcelain)" ]]; then
             git add uv.lock
-            git commit --amend --no-edit
-            git push --force
+            git commit --no-edit -m "chore: bump uv.lock"
+            git push
           fi
